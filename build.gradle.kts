@@ -14,6 +14,7 @@ kotlin {
     sourceSets {
         nativeMain.dependencies {
             implementation(libs.clikt)
+            implementation(libs.clikt)
         }
     }
 }
