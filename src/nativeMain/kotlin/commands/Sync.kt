@@ -1,35 +1,19 @@
 package commands
 
-import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.core.Context
-import com.github.ajalt.clikt.core.context
 import com.github.ajalt.clikt.parameters.options.flag
 import com.github.ajalt.clikt.parameters.options.option
-import com.github.ajalt.clikt.sources.ValueSource
+import config.ResolvedEntry
+import config.config
 
-class Sync: CliktCommand() {
-    init {
-        context {
-//            valueSources(
-//                JsonValueSource.from(System.getProperty("user.dir") + "/config.json"),
-//                JsonValueSource.from(System.getProperty("user.dir") + "/samples/json/config.json")
-//            )
-        }
-    }
+class Sync(env: Env) : BaseCommand(env) {
+    private val overwrite by option("-o", "--overwrite", help = "Replace an existing file or link at the source")
+        .flag("--no-overwrite", default = env.loadResult.config?.sync?.overwrite ?: false)
 
-    init {
-//        context {
-//            valueSource = PropertiesValueSource.from("myconfig.properties")
-//        }
-    }
-
-    val overwrite: Boolean by option("-o", "--overwrite", help = "enable verbose mode").flag(default = false)
-
-    override fun run() {
-//        ValueSource
-    }
+    override fun plan(entry: ResolvedEntry) = operations.planSync(entry, overwrite)
 
     override fun help(context: Context): String {
-        return "Sync"
+        return "Create missing symlinks. For each entry whose target exists, creates or fixes the symbolic " +
+                "link at the source. Nothing is moved, which makes it the command for setting up a new machine."
     }
 }

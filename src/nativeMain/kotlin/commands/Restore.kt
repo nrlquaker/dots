@@ -1,20 +1,19 @@
 package commands
 
-import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.core.Context
 import com.github.ajalt.clikt.parameters.options.flag
 import com.github.ajalt.clikt.parameters.options.option
+import config.ResolvedEntry
+import config.config
 
-class Restore: CliktCommand() {
-    val overwrite: Boolean by option("-o", "--overwrite", help = "enable verbose mode").flag(default = false)
+class Restore(env: Env) : BaseCommand(env) {
+    private val overwrite by option("-o", "--overwrite", help = "Replace an existing file at the source")
+        .flag("--no-overwrite", default = env.loadResult.config?.restore?.overwrite ?: false)
 
-    override fun run() {
-
-    }
+    override fun plan(entry: ResolvedEntry) = operations.planRestore(entry, overwrite)
 
     override fun help(context: Context): String {
-        return "Remove symlinks for dotfiles. Restore original files by removing the symlinks created by the" +
-                "'link' command. This will remove the symbolic links at the source locations and move the files" +
-                "from target back to source."
+        return "Undo backup. Removes the symbolic link at each source and moves the file from its target " +
+                "back to the source location."
     }
 }

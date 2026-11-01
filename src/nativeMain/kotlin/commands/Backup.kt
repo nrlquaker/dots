@@ -1,20 +1,19 @@
 package commands
 
-import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.core.Context
 import com.github.ajalt.clikt.parameters.options.flag
 import com.github.ajalt.clikt.parameters.options.option
+import config.ResolvedEntry
+import config.config
 
-class Backup: CliktCommand() {
-    val overwrite: Boolean by option("-o", "--overwrite", help = "enable verbose mode").flag(default = false)
+class Backup(env: Env) : BaseCommand(env) {
+    private val overwrite by option("-o", "--overwrite", help = "Replace an existing target")
+        .flag("--no-overwrite", default = env.loadResult.config?.backup?.overwrite ?: false)
 
-    override fun run() {
-
-    }
+    override fun plan(entry: ResolvedEntry) = operations.planBackup(entry, overwrite)
 
     override fun help(context: Context): String {
-        return "Create symlinks for dotfiles. Create symlinks for all specified dotfiles based on the configuration" +
-                "file. This will move the actual files from source to target locations and create symbolic links" +
-                "at the source locations that point to the target files."
+        return "Move dotfiles to their targets and leave symlinks behind. Each source is moved to its target " +
+                "and a symbolic link pointing to the target is created at the source location."
     }
 }
