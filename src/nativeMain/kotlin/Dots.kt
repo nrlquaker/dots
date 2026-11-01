@@ -1,7 +1,12 @@
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.core.Context
+import com.github.ajalt.clikt.parameters.options.versionOption
 
 class Dots: CliktCommand() {
+    init {
+        versionOption(VERSION)
+    }
+
     override fun run() = Unit
 
     override fun help(context: Context): String {
