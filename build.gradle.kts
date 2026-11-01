@@ -1,3 +1,6 @@
+import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
+import org.jetbrains.kotlin.gradle.plugin.mpp.NativeBuildType
+
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.kotlinSerialization)
@@ -41,4 +44,18 @@ kotlin {
             implementation(libs.okio.fakefilesystem)
         }
     }
+}
+
+tasks.register<Zip>("packageRelease") {
+    group = "distribution"
+    description = "Builds the release binary and zips it as build/dist/dots-<version>-macos-arm64.zip."
+    val link = kotlin.targets.getByName<KotlinNativeTarget>("native")
+        .binaries.getExecutable(NativeBuildType.RELEASE).linkTaskProvider
+    from(link) {
+        include("*.kexe")
+        rename { "dots" }
+        filePermissions { unix("rwxr-xr-x") }
+    }
+    archiveFileName = "dots-${project.version}-macos-arm64.zip"
+    destinationDirectory = layout.buildDirectory.dir("dist")
 }
