@@ -6,7 +6,14 @@ Inspired by [bonclay](https://github.com/talal/bonclay). Unlike bonclay, the con
 
 ## Install
 
-Download `dots-<version>-macos-arm64.zip` from a release, unzip it and put `dots` on your `PATH`. Or build it yourself (see [Development](#development)).
+Can be easily installed with [Homebrew](https://brew.sh):
+
+```sh
+brew tap nrlquaker/personal
+brew install dots
+```
+
+Alternatively, binaries are available in the [GitHub Releases](https://github.com/nrlquaker/dots/releases)
 
 ## Config
 
